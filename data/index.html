@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESP32-CAM Robot</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ESP32-CAM Robot Control</h1>
+      <nav class="hamburger-menu">
+        <input type="checkbox" id="menu-toggle" />
+        <label for="menu-toggle" class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        <ul class="menu-items">
+          <li><a href="index.html">Control</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
+          <li><a href="informations.html">Informations</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="padding" style="height: 25px"></div>
+
+    <main class="main-container">
+      <section class="streaming-container">
+        <img
+          src=""
+          id="streaming"
+          alt="Camera Stream"
+          width="640"
+          height="480"
+          style="background-color: #ccc"
+        />
+      </section>
+      <!-- <section class="streaming-container">
+        <div style="width: 640px; height: 480px; background-color: #ccc; display: flex; align-items: center; justify-content: center;">
+          <span>Camera Stream</span>
+        </div>
+      </section> -->
+      <section class="controls-container">
+        <!-- Speed Control Section -->
+        <div class="speed-control">
+          <label for="speed">Speed (RPM): </label>
+          <input type="number" id="speed" value="50" min="0" max="280" />
+          <button class="button" onclick="setSpeed()">Set Speed</button>
+        </div>
+
+        <!-- Orientation Controls Section -->
+        <div style="text-align: center">
+          <label for="rotateSlider">Orientation</label>
+        </div>
+        <div class="rotation-controls">
+          <button id="rotateL">Rotate Left</button>
+          <button id="rotateR">Rotate Right</button>
+        </div>
+
+        <!-- Movement Controls Section -->
+        <div style="text-align: center">
+          <label for="movement">Movement Controls</label>
+        </div>
+        <div class="movement-controls">
+          <button id="diag_for_right" class="button">&#8598;</button>
+          <!-- NW arrow -->
+          <button id="forward" class="button">&#8593;</button>
+          <!-- Up arrow -->
+          <button id="diag_for_left" class="button">&#8599;</button>
+          <!-- NE arrow -->
+          <button id="left" class="button">&#8592;</button>
+          <!-- Left arrow -->
+          <button id="stop" class="button">Stop</button>
+          <button id="right" class="button">&#8594;</button>
+          <!-- Right arrow -->
+          <button id="diag_back_left" class="button">&#8601;</button>
+          <!-- SW arrow -->
+          <button id="backward" class="button">&#8595;</button>
+          <!-- Down arrow -->
+          <button id="diag_back_right" class="button">&#8600;</button>
+          <!-- SE arrow -->
+        </div>
+
+        <!-- <div class="padding" style="height: 5px;"></div> -->
+
+        <!-- Predefined Path Section-->
+        <div style="text-align: center">
+          <label for="predefined-path">Predefined Path</label>
+        </div>
+        <div class="predefined-path">
+          <button id="path1" class="button">Path 1</button>
+          <button id="path2" class="button">Path 2</button>
+          <button id="path3" class="button">Path 3</button>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>
+        Keyboard Shortcuts: W (Forward), S (Backward), A (Left), D (Right), F
+        (Stop), Q (Rotate Left), E (Rotate Right), R (North-West), T (North-East), F (South-West), G (South-East)
+      </p>
+    </footer>
+    <script src="index.js"></script>
+  </body>
+</html>

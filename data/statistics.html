@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Statistics - ESP32-CAM Robot</title>
+    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="chart_styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@1.28.0/build/global/luxon.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1.0.0"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>ESP32-CAM Robot Statistics</h1>
+      <nav class="hamburger-menu">
+        <input type="checkbox" id="menu-toggle" />
+        <label for="menu-toggle" class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </label>
+        <ul class="menu-items">
+          <li><a href="index.html">Control</a></li>
+          <li><a href="statistics.html">Statistics</a></li>
+          <li><a href="informations.html">Informations</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <section class="statistics-placeholder">
+        <h2>Statistics</h2>
+        <canvas id="chart1" style="width: 600px; height: 400px;"></canvas>
+        <canvas id="chart2" style="width: 600px; height: 400px;"></canvas>
+        <canvas id="chart3" style="width: 600px; height: 400px;"></canvas>
+        <canvas id="chart4" style="width: 600px; height: 400px;"></canvas>
+        <script src="velocity_charts.js"></script> 
+        <div id="trajectory_chart"></div>
+        <script src="trajectory_chart.js"></script>
+      </section>
+    </main>
+  </body>
+</html>

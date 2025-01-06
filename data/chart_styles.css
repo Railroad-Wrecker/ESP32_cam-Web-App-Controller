@@ -1,0 +1,42 @@
+#chart1 {
+    position: absolute;
+    top: 80px;
+    bottom: 0;
+    right: 270px;
+    left: 30px;
+}
+
+#chart2 {
+    position: absolute;
+    top: 80px;
+    bottom: 0;
+    right: 400px;
+    left: 1300px;
+}
+
+#chart3 {
+    position: absolute;
+    top: 500px;
+    bottom: 400px;
+    right: 270px;
+    left: 30px;
+}
+
+#chart4 {
+    position: absolute;
+    top: 500px;
+    bottom: 400px;
+    right: 400px;
+    left: 1300px;
+}
+
+#trajectory_chart {
+    width: 600px; 
+    height: 750px; 
+    border: 1px solid black; 
+    position: absolute;
+    top: 120px;
+    bottom: 770px;
+    right: 1050px;
+    left: 650px;
+}
