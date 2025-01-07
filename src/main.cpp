@@ -22,6 +22,9 @@ void diag_for_left ();
 void diag_for_right ();
 void diag_back_left ();
 void diag_back_right ();
+void path1();
+void path2();
+void path3();
 
 int speedValue = 0;
 
@@ -91,6 +94,18 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
     if (!strcmp((char *)data, "diag_back_left"))
     {
       diag_back_left();
+    }
+    if (!strcmp((char *)data, "path1"))
+    {
+      path1();
+    }
+    if (!strcmp((char *)data, "path2"))
+    {
+      path2();
+    }
+    if (!strcmp((char *)data, "path3"))
+    {
+      path3();
     }
     else if (String((char *)data).startsWith("setSpeed:"))
     {
@@ -195,4 +210,16 @@ void diag_back_left (){
 }
 void diag_back_right (){
    Serial.printf("m -%d 0 0 -%d'\n", speedValue, speedValue);
+}
+
+void path_1() {
+  // TODO: Implement square path
+}
+
+void path_2() {
+  // TODO: Implement triangle path
+}
+
+void path_3() {
+  // TODO: Implement hospital path
 }

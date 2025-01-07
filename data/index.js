@@ -94,6 +94,15 @@ var keyActions = {
   f: function () {
     buttonpressed("stop");
   },
+  1: function () {
+    buttonpressed("path1");
+  },
+  2: function () {
+    buttonpressed("path2");
+  },
+  3: function () {
+    buttonpressed("path3");
+  },
 };
 
 var keys = {};
@@ -138,5 +147,11 @@ function handleMultipleKeyPress() {
     buttonpressed("rotateR");
   } else if (keys["f"]) {
     buttonpressed("stop");
+  } else if (keys["1"]) {
+    buttonpressed("path1");
+  } else if (keys["2"]) {
+    buttonpressed("path2");
+  } else if (keys["3"]) {
+    buttonpressed("path3");
   }
 }
