@@ -115,6 +115,15 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
+// Add event listeners for button clicks
+document.getElementById("rotateL").addEventListener("click", function () {
+  buttonpressed("rotateL");
+});
+
+document.getElementById("rotateR").addEventListener("click", function () {
+  buttonpressed("rotateR");
+});
+
 function handleMultipleKeyPress() {
   if (keys["w"] && keys["d"]) {
     buttonpressed("diag_for_right");
