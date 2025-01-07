@@ -9,7 +9,8 @@ const char *ssid = "ESP32_CAM";
 const char *password = "12345678";
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-
+unsigned long lastCommandTime = 0; // Store the timestamp of the last command
+int currentStep = -1;              // Track the current step (-1 indicates the function is idle)
 void handleForward();
 void handleBackward();
 void handleLeft();
@@ -212,14 +213,64 @@ void diag_back_right (){
    Serial.printf("m -%d 0 0 -%d'\n", speedValue, speedValue);
 }
 
-void path_1() {
-  // TODO: Implement square path
+void path1() {
+   unsigned long currentTime = millis(); // Get the current time
+
+  // Check if the function has just been activated
+  if (currentStep == -1) {
+    Serial.println("Starting square movement...");
+    currentStep = 0; // Start with the first step
+    lastCommandTime = currentTime; // Initialize the timer
+  }
+  
+  // Use the currentStep to determine the sequence of commands
+  switch (currentStep) {
+    case 0: // Step 1: Move forward
+      if (currentTime - lastCommandTime >= 0) { // Execute immediately
+        Serial.println("l 70'"); // Send forward command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 1; // Move to the next step
+      }
+      break;
+
+    case 1: // Wait 3.3 seconds for forward motion
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m -70 70 70 -70'"); // Send right-turn command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 2; // Move to the next step
+      }
+      break;
+
+    case 2: // Wait 4.4 seconds for right motion
+      if (currentTime - lastCommandTime >= 4400) {
+        Serial.println("l -70'"); // Send backward command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 3; // Move to the next step
+      }
+      break;
+
+    case 3: // Wait 3.3 seconds for backward motion
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m 70 -70 -70 70'"); // Send left-turn command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 4; // Move to the next step
+      }
+      break;
+
+    case 4: // Wait 4.4 seconds for left motion
+      if (currentTime - lastCommandTime >= 4400) {
+        Serial.println("Square path complete!"); // Notify that the path is complete
+        currentStep = -1; // Reset the step (idle state)
+      }
+      break;
+  }
+  
 }
 
-void path_2() {
+void path2() {
   // TODO: Implement triangle path
 }
 
-void path_3() {
+void path3() {
   // TODO: Implement hospital path
 }
