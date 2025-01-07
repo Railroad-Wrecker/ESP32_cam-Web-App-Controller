@@ -214,7 +214,10 @@ void diag_back_right (){
 }
 
 void path1() {
-   unsigned long currentTime = millis(); // Get the current time
+  static unsigned long lastCommandTime = 0; // Initialize the timer
+  static int currentStep = -1; // Initialize the step counter
+
+  unsigned long currentTime = millis(); // Get the current time
 
   // Check if the function has just been activated
   if (currentStep == -1) {
@@ -241,30 +244,65 @@ void path1() {
       }
       break;
 
-    case 2: // Wait 4.4 seconds for right motion
-      if (currentTime - lastCommandTime >= 4400) {
-        Serial.println("l -70'"); // Send backward command
+    case 2: // Wait 1 second for the turn to complete
+      if (currentTime - lastCommandTime >= 1000) {
+        Serial.println("l 70'"); // Send forward command
         lastCommandTime = currentTime; // Save the current time
         currentStep = 3; // Move to the next step
       }
       break;
 
-    case 3: // Wait 3.3 seconds for backward motion
+    case 3: // Wait 3.3 seconds for forward motion
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m 70 -70 -70 70'"); // Send left-turn command
+        Serial.println("m -70 70 70 -70'"); // Send right-turn command
         lastCommandTime = currentTime; // Save the current time
         currentStep = 4; // Move to the next step
       }
       break;
 
-    case 4: // Wait 4.4 seconds for left motion
-      if (currentTime - lastCommandTime >= 4400) {
-        Serial.println("Square path complete!"); // Notify that the path is complete
-        currentStep = -1; // Reset the step (idle state)
+    case 4: // Wait 1 second for the turn to complete
+      if (currentTime - lastCommandTime >= 1000) {
+        Serial.println("l 70'"); // Send forward command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 5; // Move to the next step
       }
       break;
+
+    case 5: // Wait 3.3 seconds for forward motion
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m -70 70 70 -70'"); // Send right-turn command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 6; // Move to the next step
+      }
+      break;
+
+    case 6: // Wait 1 second for the turn to complete
+      if (currentTime - lastCommandTime >= 1000) {
+        Serial.println("l 70'"); // Send forward command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 7; // Move to the next step
+      }
+      break;
+
+    case 7: // Wait 3.3 seconds for forward motion
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m -70 70 70 -70'"); // Send right-turn command
+        lastCommandTime = currentTime; // Save the current time
+        currentStep = 8; // Move to the next step
+      }
+      break;
+
+    case 8: // Wait 1 second for the turn to complete
+      if (currentTime - lastCommandTime >= 1000) {
+        Serial.println("Square movement completed.");
+        currentStep = -1; // Reset the step counter when done
+      }
+      break;
+
+    default:
+      currentStep = -1; // Reset the step counter when done
+      break;
   }
-  
 }
 
 void path2() {
@@ -273,4 +311,8 @@ void path2() {
 
 void path3() {
   // TODO: Implement hospital path
+}
+
+void loop() {
+  path1(); // Execute the path function
 }
