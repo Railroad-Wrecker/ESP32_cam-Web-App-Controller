@@ -56,17 +56,6 @@ function buttonpressed(x) {
   websocket.send(x);
 }
 
-function updateRotation(value) {
-  // Handle the rotation logic here
-  console.log("Rotation value:", value);
-}
-
-function resetRotation() {
-  const slider = document.getElementById("rotateSlider");
-  slider.value = 0;
-  updateRotation(0);
-}
-
 // Function to set speed
 function setSpeed() {
   const speedInput = document.getElementById("speed");
@@ -109,7 +98,7 @@ var keyActions = {
 
 var keys = {};
 
-document.addEventListener('keydown', function (event) {
+document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
     keys[key] = true; // Mark key as pressed
@@ -118,7 +107,7 @@ document.addEventListener('keydown', function (event) {
   }
 });
 
-document.addEventListener('keyup', function (event) {
+document.addEventListener("keyup", function (event) {
   var key = event.key.toLowerCase();
   if (keys[key]) {
     keys[key] = false; // Mark key as released
@@ -127,27 +116,27 @@ document.addEventListener('keyup', function (event) {
 });
 
 function handleMultipleKeyPress() {
-  if (keys['w'] && keys['d']) {
+  if (keys["w"] && keys["d"]) {
     buttonpressed("diag_for_right");
-  } else if (keys['w'] && keys['a']) {
+  } else if (keys["w"] && keys["a"]) {
     buttonpressed("diag_for_left");
-  } else if (keys['s'] && keys['a']) {
+  } else if (keys["s"] && keys["a"]) {
     buttonpressed("diag_back_left");
-  } else if (keys['s'] && keys['d']) {
+  } else if (keys["s"] && keys["d"]) {
     buttonpressed("diag_back_right");
-  } else if (keys['w']) {
+  } else if (keys["w"]) {
     buttonpressed("forward");
-  } else if (keys['a']) {
+  } else if (keys["a"]) {
     buttonpressed("left");
-  } else if (keys['s']) {
+  } else if (keys["s"]) {
     buttonpressed("backward");
-  } else if (keys['d']) {
+  } else if (keys["d"]) {
     buttonpressed("right");
-  } else if (keys['q']) {
+  } else if (keys["q"]) {
     buttonpressed("rotateL");
-  } else if (keys['e']) {
+  } else if (keys["e"]) {
     buttonpressed("rotateR");
-  } else if (keys['f']) {
+  } else if (keys["f"]) {
     buttonpressed("stop");
-  } 
+  }
 }
