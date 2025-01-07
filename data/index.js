@@ -106,6 +106,7 @@ var keyActions = {
 };
 
 var keys = {};
+var intervals = {};
 
 document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
@@ -113,6 +114,9 @@ document.addEventListener("keydown", function (event) {
     keys[key] = true; // Mark key as pressed
     handleMultipleKeyPress();
     console.log("Key pressed:", key);
+    intervals[key] = setInterval(() => {
+      keyActions[key]();
+    }, 100); // Adjust the interval time as needed
   }
 });
 
@@ -120,6 +124,8 @@ document.addEventListener("keyup", function (event) {
   var key = event.key.toLowerCase();
   if (keys[key]) {
     keys[key] = false; // Mark key as released
+    clearInterval(intervals[key]);
+    delete intervals[key];
     websocket.send("stop");
   }
 });
