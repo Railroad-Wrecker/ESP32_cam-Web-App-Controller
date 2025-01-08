@@ -130,7 +130,7 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-document.getElementById("path1Button").addEventListener("click", function () {
+document.getElementById("path1").addEventListener("click", function () {
   keyActions["1"](); // Call the function directly for path1
 });
 
