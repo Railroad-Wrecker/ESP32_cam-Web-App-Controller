@@ -130,6 +130,25 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
+// Add event listeners for touch controls
+document.addEventListener("touchstart", function (event) {
+  var touchX = event.touches[0].clientX;
+  var touchY = event.touches[0].clientY;
+  var button = document.elementFromPoint(touchX, touchY);
+  if (button) {
+    button.classList.add("active");
+    buttonpressed(button.id);
+  }
+});
+
+document.addEventListener("touchend", function (event) {
+  var button = document.querySelector(".button.active");
+  if (button) {
+    button.classList.remove("active");
+    buttonpressed("stop");
+  }
+});
+
 var actionStatus = {
   forward: false,
   backward: false,
