@@ -111,7 +111,11 @@ document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
     keys[key] = true; // Mark key as pressed
-    handleMultipleKeyPress();
+    if (key === "1" || key === "2" || key === "3") {
+      keyActions[key](); // Call the function directly for path1, path2, and path3
+    } else {
+      handleMultipleKeyPress();
+    }
     console.log("Key pressed:", key);
   }
 });
@@ -120,7 +124,9 @@ document.addEventListener("keyup", function (event) {
   var key = event.key.toLowerCase();
   if (keys[key]) {
     keys[key] = false; // Mark key as released
-    websocket.send("stop");
+    if (key !== "1" && key !== "2" && key !== "3") {
+      websocket.send("stop");
+    }
   }
 });
 
