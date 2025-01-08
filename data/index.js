@@ -124,41 +124,6 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-// Add event listeners for touch controls
-document.addEventListener("touchstart", function (event) {
-  var touchX = event.touches[0].clientX;
-  var touchY = event.touches[0].clientY;
-  var button = document.elementFromPoint(touchX, touchY);
-  if (button) {
-    button.classList.add("active");
-    buttonpressed(button.id);
-  }
-});
-
-document.addEventListener("touchend", function (event) {
-  var button = document.querySelector(".button.active");
-  if (button) {
-    button.classList.remove("active");
-    buttonpressed("stop");
-  }
-});
-
-// Add event listeners for click controls
-document.addEventListener("mousedown", function (event) {
-  if (event.target.classList.contains("button")) {
-    event.target.classList.add("active");
-    buttonpressed(event.target.id);
-  }
-});
-
-document.addEventListener("mouseup", function (event) {
-  var button = document.querySelector(".button.active");
-  if (button) {
-    button.classList.remove("active");
-    buttonpressed("stop");
-  }
-});
-
 var actionStatus = {
   forward: false,
   backward: false,
