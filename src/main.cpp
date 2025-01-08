@@ -4,6 +4,12 @@
 #include "Arduino.h"
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
+#include <ArduinoJson.h>
+
+HardwareSerial SerialAT(1); // Use UART1
+unsigned long lastMessageTime = 0;
+const unsigned long messageInterval = 1000;  // Send every 1000 ms
+int values[5];
 
 const char *ssid = "ESP32_CAM";
 const char *password = "12345678";
@@ -16,6 +22,9 @@ bool path1Active = false;          // Flag to track if path1 is running
 int speedValue = 0;
 bool path2Active = false;  
 int currentStep2 = -1; 
+bool path3Active = false;  
+int currentStep3 = -1; 
+
 
 void handleForward();
 void handleBackward();
@@ -32,6 +41,26 @@ void diag_back_right ();
 void path1();
 void path2();
 void path3();
+
+void serial_setup() {
+  Serial.begin(115200);  // USB Serial for debugging (via FTDI adapter)
+  SerialAT.begin(115200, SERIAL_8N1, 15, 14);  // RX=GPIO15, TX=GPIO14
+}
+void read_serial(){
+  if (SerialAT.available()) {
+        String receivedData = SerialAT.readStringUntil('\n');  // Read the incoming data
+        //Serial.println("Received: " + receivedData);
+        int index = 0;
+        int start = 0;
+        for (int i = 0; i < receivedData.length(); i++) {
+            if (receivedData[i] == ' ' || i == receivedData.length() - 1) {
+                String value = receivedData.substring(start, i + 1);
+                values[index++] = value.toInt();
+                start = i + 1;
+            }
+        }
+    }
+}
 
 void initSPIFFS()
 {
@@ -153,10 +182,11 @@ void initWebSocket()
 
 void setup()
 {
+  serial_setup();
   // Wi-Fi connection
-  WiFi.softAP(ssid, password);
-  IPAddress miIP = WiFi.softAPIP();
-
+  // WiFi.softAP(ssid, password);
+  // IPAddress miIP = WiFi.softAPIP();
+  WiFi.begin("K", "12345678");
   Serial.begin(115200);
   Serial.setDebugOutput(false);
 
@@ -175,6 +205,19 @@ void loop() {
   }
   if(path2Active){
     path2();
+  }
+  if (millis() - lastMessageTime > messageInterval) {
+    read_serial();
+    StaticJsonDocument<200> jsonDoc;
+    JsonArray jsonArray = jsonDoc.to<JsonArray>();
+
+    for (int i = 0; i < 5; i++) {
+      jsonArray.add(values[i]); // Generate random numbers between -280 and 281
+    }
+    String jsonString;
+    serializeJson(jsonDoc, jsonString);
+    ws.textAll(jsonString); // Broadcast the JSON string to all clients
+    lastMessageTime = millis();
   }
   ws.cleanupClients();
 }
@@ -319,5 +362,49 @@ void path2() {
 }
 
 void path3() {
-  // TODO: Implement hospital path
+  if (!path3Active) return;
+
+  unsigned long currentTime = millis();
+
+  if (currentStep3 == -1) {
+    currentStep3 = 0;
+    lastCommandTime = currentTime;
+  }
+
+  switch (currentStep3) {
+    case 0:
+      if (currentTime - lastCommandTime >= 0) {
+        //Serial.println("m 162 162 219 219'");
+        Serial.println("m -68.75 -68.75 -122.23 -122.23'");
+        lastCommandTime = currentTime;
+        currentStep3 = 1;
+      }
+      break;
+    case 1:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep3 = 2;
+      }
+      break;
+    case 2:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep3 = 3;
+      }
+      break;
+    case 3:
+      if (currentTime - lastCommandTime >= 12600) {
+        Serial.println("m 70 -70 -70 70'");
+        currentStep3 = -1;
+        path3Active = false;
+      }
+      break;
+    
+    default:
+      currentStep3 = -1;
+      path3Active = false;
+      break;
+  }
 }

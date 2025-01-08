@@ -1,42 +1,42 @@
 // Function to create a chart
 function createChart(ctx, label) {
-    return new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: [], // Time labels
-        datasets: [{
-          label: label,
-          data: [],
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1,
-          fill: false
-        }]
-      },
-      options: {
-        responsive: false,
-        scales: {
-          x: {
-            type: 'time',
-            time: {
-              unit: 'second'
-            },
-            adapters: {
-              date: {
-                library: 'luxon',
-                format: 'iso'
-              }
-            }
+  return new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: [], // Time labels
+      datasets: [{
+        label: label,
+        data: [],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: false,
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'second'
           },
-          y: {
-            beginAtZero: false,
-            min:-280,
-            max: 280
+          adapters: {
+            date: {
+              library: 'luxon',
+              format: 'iso'
+            }
           }
+        },
+        y: {
+          beginAtZero: false,
+          min:-280,
+          max: 280
         }
       }
-    });
-  }
-  
+    }
+  });
+}
+
   // Initialize charts
   const chart1 = createChart(document.getElementById('chart1').getContext('2d'), 'Velocity Wheel 1 (Bottom Left)');
   const chart2 = createChart(document.getElementById('chart2').getContext('2d'), 'Velocity Wheel 2 (Top Left)');
@@ -44,7 +44,7 @@ function createChart(ctx, label) {
   const chart4 = createChart(document.getElementById('chart4').getContext('2d'), 'Velocity Wheel 4 (Top Right)');
   
   // WebSocket setup
-  const ws = new WebSocket('ws://192.168.4.1:81/ws'); // Replace with your ESP32 IP address
+  const ws = new WebSocket('ws://192.168.137.23/ws'); // Replace with your ESP32 IP address
   
   ws.onopen = function() {
     console.log("WebSocket connection established");
@@ -53,6 +53,7 @@ function createChart(ctx, label) {
   ws.onmessage = function(event) {
     console.log("Data received from ESP32:", event.data); // Log received data
     const velocityNumbers = JSON.parse(event.data);
+    // console.log(velocityNumbers);
     const now = new Date();
   
     // Function to update chart data
@@ -70,10 +71,10 @@ function createChart(ctx, label) {
     }
   
     // Update each chart with the same random number
-    updateChart(chart1, velocityNumbers[0]);
-    updateChart(chart2, velocityNumbers[1]);
-    updateChart(chart3, velocityNumbers[2]);
-    updateChart(chart4, velocityNumbers[3]);
+    updateChart(chart1, velocityNumbers[1]);
+    updateChart(chart2, velocityNumbers[2]);
+    updateChart(chart3, velocityNumbers[3]);
+    updateChart(chart4, velocityNumbers[4]);
   };
   
   ws.onerror = function(error) {
@@ -82,5 +83,6 @@ function createChart(ctx, label) {
   
   ws.onclose = function() {
     console.log("WebSocket connection closed");
+
+    
   };
-  

@@ -6,10 +6,10 @@
     <title>Statistics - ESP32-CAM Robot</title>
     <link rel="stylesheet" href="index.css" />
     <link rel="stylesheet" href="chart_styles.css" />
-    <script src="/libs/chart.js/dist/chart.js"></script>
-    <script src="/libs/luxon.js"></script>
-    <script src="/libs/chartjs-adapter-luxon.js"></script>
-    <script src="/libs/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
   </head>
   <body>
     <header>
@@ -30,7 +30,6 @@
     </header>
     <main>
       <section class="statistics-placeholder">
-        <h2>Statistics</h2>
         <canvas id="chart1" style="width: 600px; height: 400px"></canvas>
         <canvas id="chart2" style="width: 600px; height: 400px"></canvas>
         <canvas id="chart3" style="width: 600px; height: 400px"></canvas>

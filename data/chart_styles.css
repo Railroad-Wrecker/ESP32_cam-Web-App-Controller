@@ -10,8 +10,8 @@
     position: absolute;
     top: 80px;
     bottom: 0;
-    right: 400px;
-    left: 1300px;
+    right: 1050px;
+    left: 650px;
 }
 
 #chart3 {
@@ -26,8 +26,8 @@
     position: absolute;
     top: 500px;
     bottom: 400px;
-    right: 400px;
-    left: 1300px;
+    right: 1050px;
+    left: 650px;
 }
 
 #trajectory_chart {
@@ -37,6 +37,6 @@
     position: absolute;
     top: 120px;
     bottom: 770px;
-    right: 1050px;
-    left: 650px;
+    right: 400px;
+    left: 1300px;
 }
