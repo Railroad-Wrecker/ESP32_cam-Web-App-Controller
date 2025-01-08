@@ -11,9 +11,11 @@ AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
 unsigned long lastCommandTime = 0; // Store the timestamp of the last command
-int currentStep = -1;              // Track the current step (-1 indicates the function is idle)
+int currentStep1 = -1;              // Track the current step (-1 indicates the function is idle)
 bool path1Active = false;          // Flag to track if path1 is running
 int speedValue = 0;
+bool path2Active = false;  
+int currentStep2 = -1; 
 
 void handleForward();
 void handleBackward();
@@ -30,8 +32,6 @@ void diag_back_right ();
 void path1();
 void path2();
 void path3();
-
-int speedValue = 0;
 
 void initSPIFFS()
 {
@@ -103,12 +103,15 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
     if (!strcmp((char *)data, "path1")) {
       if (!path1Active) {
         path1Active = true; // Activate path1
-        currentStep = -1;   // Reset path1 to the initial step
+        currentStep1 = -1;   // Reset path1 to the initial step
       }
     }
     if (!strcmp((char *)data, "path2"))
     {
-      path2();
+      if (!path2Active) {
+        path2Active = true; // Activate path1
+        currentStep2 = -1;   // Reset path1 to the initial step
+      }
     }
     if (!strcmp((char *)data, "path3"))
     {
@@ -170,6 +173,9 @@ void loop() {
   if (path1Active) {
     path1(); // Execute path1 if it's active
   }
+  if(path2Active){
+    path2();
+  }
   ws.cleanupClients();
 }
 
@@ -226,18 +232,17 @@ void path1() {
 
   unsigned long currentTime = millis();
 
-  if (currentStep == -1) {
-    Serial.println("Starting square movement...");
-    currentStep = 0;
+  if (currentStep1 == -1) {
+    currentStep1 = 0;
     lastCommandTime = currentTime;
   }
 
-  switch (currentStep) {
+  switch (currentStep1) {
     case 0:
       if (currentTime - lastCommandTime >= 0) {
         Serial.println("l 70'");
         lastCommandTime = currentTime;
-        currentStep = 1;
+        currentStep1 = 1;
       }
       break;
 
@@ -245,75 +250,72 @@ void path1() {
       if (currentTime - lastCommandTime >= 3300) {
         Serial.println("m -70 70 70 -70'");
         lastCommandTime = currentTime;
-        currentStep = 2;
+        currentStep1 = 2;
       }
       break;
 
     case 2:
-      if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'");
+      if (currentTime - lastCommandTime >= 4400) {
+        Serial.println("l -70'");
         lastCommandTime = currentTime;
-        currentStep = 3;
+        currentStep1 = 3;
       }
       break;
 
     case 3:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
+        Serial.println("m 70 -70 -70 70'");
         lastCommandTime = currentTime;
-        currentStep = 4;
+        currentStep1 = 4;
       }
       break;
-
     case 4:
-      if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'");
-        lastCommandTime = currentTime;
-        currentStep = 5;
-      }
-      break;
-
-    case 5:
-      if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
-        lastCommandTime = currentTime;
-        currentStep = 6;
-      }
-      break;
-
-    case 6:
-      if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'");
-        lastCommandTime = currentTime;
-        currentStep = 7;
-      }
-      break;
-
-    case 7:
-      if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
-        lastCommandTime = currentTime;
-        currentStep = 8;
-      }
-      break;
-
-    case 8:
-      if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("Square movement completed.");
-        currentStep = -1;
+      if (currentTime - lastCommandTime >= 4400) {
+        Serial.println("l 0'");
+        currentStep1 = -1;
         path1Active = false;
       }
       break;
 
     default:
-      currentStep = -1;
+      currentStep1 = -1;
       path1Active = false;
       break;
   }
 }
 
 void path2() {
-  // TODO: Implement triangle path
+  if (!path2Active) return;
+
+  unsigned long currentTime = millis();
+
+  if (currentStep2 == -1) {
+    currentStep2 = 0;
+    lastCommandTime = currentTime;
+  }
+
+  switch (currentStep2) {
+    case 0:
+      if (currentTime - lastCommandTime >= 0) {
+        //Serial.println("m 162 162 219 219'");
+        Serial.println("m -68.75 -68.75 -122.23 -122.23'");
+        lastCommandTime = currentTime;
+        currentStep2 = 1;
+      }
+      break;
+
+    case 1:
+      if (currentTime - lastCommandTime >= 12600) {
+        Serial.println("l 0'");
+        currentStep2 = -1;
+        path2Active = false;
+      }
+      break;
+    default:
+      currentStep2 = -1;
+      path2Active = false;
+      break;
+  }
 }
 
 void path3() {

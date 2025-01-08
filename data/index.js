@@ -130,12 +130,12 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-function buttonpressed(action, callback) {
-  websocket.send(action);
-  if (callback && !callback()) {
-    setTimeout(() => buttonpressed(action, callback), 100); // Adjust the timeout as needed
-  }
-}
+// function buttonpressed(action, callback) {
+//   websocket.send(action);
+//   if (callback && !callback()) {
+//     setTimeout(() => buttonpressed(action, callback), 100); // Adjust the timeout as needed
+//   }
+// }
 
 var actionStatus = {
   forward: false,
