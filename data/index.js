@@ -130,8 +130,26 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-document.getElementById("path1").addEventListener("click", function () {
-  keyActions["1"](); // Call the function directly for path1
+document.getElementById("path1").addEventListener("mousedown", function () {
+  keys["1"] = true;
+  keyActions["1"]();
+  this.interval = setInterval(() => {
+    if (keys["1"]) {
+      keyActions["1"]();
+    }
+  }, 100); // Adjust the interval time as needed
+});
+
+document.getElementById("path1").addEventListener("mouseup", function () {
+  clearInterval(this.interval);
+  keys["1"] = false;
+  websocket.send("stop");
+});
+
+document.getElementById("path1").addEventListener("mouseleave", function () {
+  clearInterval(this.interval);
+  keys["1"] = false;
+  websocket.send("stop");
 });
 
 var actionStatus = {
