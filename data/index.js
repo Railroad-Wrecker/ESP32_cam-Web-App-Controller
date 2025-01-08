@@ -105,17 +105,8 @@ var keyActions = {
   },
 };
 
-// Mouse button mapping
-var mouseActions = {
-  0: "forward", // Left mouse button
-  1: "stop",    // Middle mouse button
-  2: "backward" // Right mouse button
-};
-
 var keys = {};
-var mouseButtons = {};
 
-// Add event listeners for key presses
 document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
@@ -135,21 +126,15 @@ document.addEventListener("keyup", function (event) {
 
 // Add event listeners for mouse button presses
 document.addEventListener("mousedown", function (event) {
-  if (mouseActions.hasOwnProperty(event.button) && !mouseButtons[event.button]) {
-    mouseButtons[event.button] = true; // Mark mouse button as pressed
-    handleMultipleKeyPress();
-    console.log("Mouse button pressed:", event.button);
+  if (event.target.id in keyActions) {
+    keyActions[event.target.id]();
   }
 });
 
 document.addEventListener("mouseup", function (event) {
-  if (mouseButtons[event.button]) {
-    mouseButtons[event.button] = false; // Mark mouse button as released
-    websocket.send("stop");
-  }
+  websocket.send("stop");
 });
 
-// Action statuses
 var actionStatus = {
   forward: false,
   backward: false,
@@ -164,14 +149,15 @@ var actionStatus = {
   stop: true,
   path1: false,
   path2: false,
-  path3: false,
+  path3: false
 };
 
 function isActionFinished(action) {
+  // Check if the action is finished
   return actionStatus[action];
 }
 
-websocket.onmessage = function (event) {
+websocket.onmessage = function(event) {
   var message = event.data;
   var action = message.replace("_finished", "");
   if (actionStatus.hasOwnProperty(action)) {
@@ -194,19 +180,11 @@ function handleMultipleKeyPress() {
     { keys: ["f"], action: "stop" },
     { keys: ["1"], action: "path1" },
     { keys: ["2"], action: "path2" },
-    { keys: ["3"], action: "path3" }
+    { keys: ["3"], action: "path3" }  
   ];
 
   for (const { keys: actionKeys, action } of actions) {
-    if (actionKeys.every((key) => keys[key])) {
-      buttonpressed(action, isActionFinished);
-      break;
-    }
-  }
-
-  // Mouse actions
-  for (const [button, action] of Object.entries(mouseActions)) {
-    if (mouseButtons[button]) {
+    if (actionKeys.every(key => keys[key])) {
       buttonpressed(action, isActionFinished);
       break;
     }
