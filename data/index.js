@@ -32,16 +32,39 @@ function initButtons() {
   var buttons = document.querySelectorAll(".button");
   buttons.forEach((button) => {
     button.addEventListener("mousedown", function (event) {
-      websocket.send(event.target.id);
+      const command = event.target.id;
+      websocket.send(command);
+
+      // Skip adding "stop" logic for path1, path2, and path3
+      if (["path1", "path2", "path3"].includes(command)) return;
+
+      button.addEventListener("mouseup", function () {
+        websocket.send("stop");
+      });
     });
+
     button.addEventListener("mouseup", function (event) {
-      websocket.send("stop");
+      if (!["path1", "path2", "path3"].includes(event.target.id)) {
+        websocket.send("stop");
+      }
     });
+
     button.addEventListener("touchstart", function (event) {
-      websocket.send(event.target.id);
+      const command = event.target.id;
+      websocket.send(command);
+
+      // Skip adding "stop" logic for path1, path2, and path3
+      if (["path1", "path2", "path3"].includes(command)) return;
+
+      button.addEventListener("touchend", function () {
+        websocket.send("stop");
+      });
     });
+
     button.addEventListener("touchend", function (event) {
-      websocket.send("stop");
+      if (!["path1", "path2", "path3"].includes(event.target.id)) {
+        websocket.send("stop");
+      }
     });
   });
 }
@@ -128,28 +151,6 @@ document.addEventListener("keyup", function (event) {
       websocket.send("stop");
     }
   }
-});
-
-document.getElementById("path1").addEventListener("mousedown", function () {
-  keys["1"] = true;
-  keyActions["1"]();
-  this.interval = setInterval(() => {
-    if (keys["1"]) {
-      keyActions["1"]();
-    }
-  }, 100); // Adjust the interval time as needed
-});
-
-document.getElementById("path1").addEventListener("mouseup", function () {
-  clearInterval(this.interval);
-  keys["1"] = false;
-  websocket.send("stop");
-});
-
-document.getElementById("path1").addEventListener("mouseleave", function () {
-  clearInterval(this.interval);
-  keys["1"] = false;
-  websocket.send("stop");
 });
 
 var actionStatus = {
