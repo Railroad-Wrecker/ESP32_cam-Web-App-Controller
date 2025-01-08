@@ -111,7 +111,6 @@ document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
     keys[key] = true; // Mark key as pressed
-    keyActions[key](); // Trigger the action
     handleMultipleKeyPress();
     console.log("Key pressed:", key);
   }
@@ -123,18 +122,6 @@ document.addEventListener("keyup", function (event) {
     keys[key] = false; // Mark key as released
     websocket.send("stop");
   }
-});
-
-document.getElementById("path1Button").addEventListener("click", function () {
-  buttonpressed("path1");
-});
-
-document.getElementById("path2Button").addEventListener("click", function () {
-  buttonpressed("path2");
-});
-
-document.getElementById("path3Button").addEventListener("click", function () {
-  buttonpressed("path3");
 });
 
 var actionStatus = {
