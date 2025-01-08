@@ -369,3 +369,10 @@ footer {
   font-size: 18px;
   color: #666;
 }
+
+/* Disable text selection for buttons */
+.button {
+  user-select: none; /* Disable text selection */
+  -webkit-user-select: none; /* Disable text selection for Safari */
+  -ms-user-select: none; /* Disable text selection for Internet Explorer/Edge */
+}
