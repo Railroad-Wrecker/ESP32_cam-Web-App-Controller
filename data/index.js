@@ -124,17 +124,6 @@ document.addEventListener("keyup", function (event) {
   }
 });
 
-// Add event listeners for mouse button presses
-document.addEventListener("mousedown", function (event) {
-  if (event.target.id in keyActions) {
-    keyActions[event.target.id]();
-  }
-});
-
-document.addEventListener("mouseup", function (event) {
-  websocket.send("stop");
-});
-
 var actionStatus = {
   forward: false,
   backward: false,
