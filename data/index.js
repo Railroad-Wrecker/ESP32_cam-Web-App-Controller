@@ -106,17 +106,17 @@ var keyActions = {
 };
 
 var keys = {};
-var intervals = {};
 
 document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
     keys[key] = true; // Mark key as pressed
-    handleMultipleKeyPress();
+    if (key === "1" || key === "2" || key === "3") {
+      keyActions[key](); // Call the function directly for path1, path2, and path3
+    } else {
+      handleMultipleKeyPress();
+    }
     console.log("Key pressed:", key);
-    intervals[key] = setInterval(() => {
-      keyActions[key]();
-    }, 100); // Adjust the interval time as needed
   }
 });
 
@@ -124,40 +124,71 @@ document.addEventListener("keyup", function (event) {
   var key = event.key.toLowerCase();
   if (keys[key]) {
     keys[key] = false; // Mark key as released
-    clearInterval(intervals[key]);
-    delete intervals[key];
-    websocket.send("stop");
+    if (key !== "1" && key !== "2" && key !== "3") {
+      websocket.send("stop");
+    }
   }
 });
 
+function buttonpressed(action, callback) {
+  websocket.send(action);
+  if (callback && !callback()) {
+    setTimeout(() => buttonpressed(action, callback), 100); // Adjust the timeout as needed
+  }
+}
+
+var actionStatus = {
+  forward: false,
+  backward: false,
+  left: false,
+  right: false,
+  diag_for_right: false,
+  diag_for_left: false,
+  diag_back_right: false,
+  diag_back_left: false,
+  rotateL: false,
+  rotateR: false,
+  stop: true,
+  path1: false,
+  path2: false,
+  path3: false
+};
+
+function isActionFinished(action) {
+  // Check if the action is finished
+  return actionStatus[action];
+}
+
+websocket.onmessage = function(event) {
+  var message = event.data;
+  var action = message.replace("_finished", "");
+  if (actionStatus.hasOwnProperty(action)) {
+    actionStatus[action] = true;
+  }
+};
+
 function handleMultipleKeyPress() {
-  if (keys["w"] && keys["d"]) {
-    buttonpressed("diag_for_right");
-  } else if (keys["w"] && keys["a"]) {
-    buttonpressed("diag_for_left");
-  } else if (keys["s"] && keys["a"]) {
-    buttonpressed("diag_back_left");
-  } else if (keys["s"] && keys["d"]) {
-    buttonpressed("diag_back_right");
-  } else if (keys["w"]) {
-    buttonpressed("forward");
-  } else if (keys["a"]) {
-    buttonpressed("left");
-  } else if (keys["s"]) {
-    buttonpressed("backward");
-  } else if (keys["d"]) {
-    buttonpressed("right");
-  } else if (keys["q"]) {
-    buttonpressed("rotateL");
-  } else if (keys["e"]) {
-    buttonpressed("rotateR");
-  } else if (keys["f"]) {
-    buttonpressed("stop");
-  } else if (keys["1"]) {
-    buttonpressed("path1");
-  } else if (keys["2"]) {
-    buttonpressed("path2");
-  } else if (keys["3"]) {
-    buttonpressed("path3");
+  const actions = [
+    { keys: ["w", "d"], action: "diag_for_right" },
+    { keys: ["w", "a"], action: "diag_for_left" },
+    { keys: ["s", "a"], action: "diag_back_left" },
+    { keys: ["s", "d"], action: "diag_back_right" },
+    { keys: ["w"], action: "forward" },
+    { keys: ["a"], action: "left" },
+    { keys: ["s"], action: "backward" },
+    { keys: ["d"], action: "right" },
+    { keys: ["q"], action: "rotateL" },
+    { keys: ["e"], action: "rotateR" },
+    { keys: ["f"], action: "stop" },
+    { keys: ["1"], action: "path1" },
+    { keys: ["2"], action: "path2" },
+    { keys: ["3"], action: "path3" }  
+  ];
+
+  for (const { keys: actionKeys, action } of actions) {
+    if (actionKeys.every(key => keys[key])) {
+      buttonpressed(action, isActionFinished);
+      break;
+    }
   }
 }

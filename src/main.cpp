@@ -9,8 +9,12 @@ const char *ssid = "ESP32_CAM";
 const char *password = "12345678";
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+
 unsigned long lastCommandTime = 0; // Store the timestamp of the last command
 int currentStep = -1;              // Track the current step (-1 indicates the function is idle)
+bool path1Active = false;          // Flag to track if path1 is running
+int speedValue = 0;
+
 void handleForward();
 void handleBackward();
 void handleLeft();
@@ -96,9 +100,11 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
     {
       diag_back_left();
     }
-    if (!strcmp((char *)data, "path1"))
-    {
-      path1();
+    if (!strcmp((char *)data, "path1")) {
+      if (!path1Active) {
+        path1Active = true; // Activate path1
+        currentStep = -1;   // Reset path1 to the initial step
+      }
     }
     if (!strcmp((char *)data, "path2"))
     {
@@ -160,8 +166,10 @@ void setup()
   delay(2000);
 }
 
-void loop()
-{
+void loop() {
+  if (path1Active) {
+    path1(); // Execute path1 if it's active
+  }
   ws.cleanupClients();
 }
 
@@ -214,93 +222,92 @@ void diag_back_right (){
 }
 
 void path1() {
-  static unsigned long lastCommandTime = 0; // Initialize the timer
-  static int currentStep = -1; // Initialize the step counter
+  if (!path1Active) return;
 
-  unsigned long currentTime = millis(); // Get the current time
+  unsigned long currentTime = millis();
 
-  // Check if the function has just been activated
   if (currentStep == -1) {
     Serial.println("Starting square movement...");
-    currentStep = 0; // Start with the first step
-    lastCommandTime = currentTime; // Initialize the timer
+    currentStep = 0;
+    lastCommandTime = currentTime;
   }
-  
-  // Use the currentStep to determine the sequence of commands
+
   switch (currentStep) {
-    case 0: // Step 1: Move forward
-      if (currentTime - lastCommandTime >= 0) { // Execute immediately
-        Serial.println("l 70'"); // Send forward command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 1; // Move to the next step
+    case 0:
+      if (currentTime - lastCommandTime >= 0) {
+        Serial.println("l 70'");
+        lastCommandTime = currentTime;
+        currentStep = 1;
       }
       break;
 
-    case 1: // Wait 3.3 seconds for forward motion
+    case 1:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'"); // Send right-turn command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 2; // Move to the next step
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep = 2;
       }
       break;
 
-    case 2: // Wait 1 second for the turn to complete
+    case 2:
       if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'"); // Send forward command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 3; // Move to the next step
+        Serial.println("l 70'");
+        lastCommandTime = currentTime;
+        currentStep = 3;
       }
       break;
 
-    case 3: // Wait 3.3 seconds for forward motion
+    case 3:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'"); // Send right-turn command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 4; // Move to the next step
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep = 4;
       }
       break;
 
-    case 4: // Wait 1 second for the turn to complete
+    case 4:
       if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'"); // Send forward command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 5; // Move to the next step
+        Serial.println("l 70'");
+        lastCommandTime = currentTime;
+        currentStep = 5;
       }
       break;
 
-    case 5: // Wait 3.3 seconds for forward motion
+    case 5:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'"); // Send right-turn command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 6; // Move to the next step
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep = 6;
       }
       break;
 
-    case 6: // Wait 1 second for the turn to complete
+    case 6:
       if (currentTime - lastCommandTime >= 1000) {
-        Serial.println("l 70'"); // Send forward command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 7; // Move to the next step
+        Serial.println("l 70'");
+        lastCommandTime = currentTime;
+        currentStep = 7;
       }
       break;
 
-    case 7: // Wait 3.3 seconds for forward motion
+    case 7:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'"); // Send right-turn command
-        lastCommandTime = currentTime; // Save the current time
-        currentStep = 8; // Move to the next step
+        Serial.println("m -70 70 70 -70'");
+        lastCommandTime = currentTime;
+        currentStep = 8;
       }
       break;
 
-    case 8: // Wait 1 second for the turn to complete
+    case 8:
       if (currentTime - lastCommandTime >= 1000) {
         Serial.println("Square movement completed.");
-        currentStep = -1; // Reset the step counter when done
+        currentStep = -1;
+        path1Active = false;
       }
       break;
 
     default:
-      currentStep = -1; // Reset the step counter when done
+      currentStep = -1;
+      path1Active = false;
       break;
   }
 }
@@ -311,8 +318,4 @@ void path2() {
 
 void path3() {
   // TODO: Implement hospital path
-}
-
-void loop() {
-  path1(); // Execute the path function
 }
