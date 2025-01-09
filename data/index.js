@@ -38,20 +38,13 @@ function initButtons() {
       // Skip adding "stop" logic for path1, path2, and path3
       if (["path1", "path2", "path3"].includes(command)) return;
 
-      // If the stop button is pressed, send the stop command
-      if (command === "stop") {
-        websocket.send("stop");
-      }
-
       button.addEventListener("mouseup", function () {
         websocket.send("stop");
       });
     });
 
     button.addEventListener("mouseup", function (event) {
-      if (!["path1", "path2", "path3"].includes(event.target.id)) {
-        websocket.send("stop");
-      }
+      websocket.send("stop");
     });
 
     button.addEventListener("touchstart", function (event) {
@@ -60,11 +53,6 @@ function initButtons() {
 
       // Skip adding "stop" logic for path1, path2, and path3
       if (["path1", "path2", "path3"].includes(command)) return;
-
-      // If the stop button is pressed, send the stop command
-      if (command === "stop") {
-        websocket.send("stop");
-      }
       
       button.addEventListener("touchend", function () {
         websocket.send("stop");
@@ -72,9 +60,7 @@ function initButtons() {
     });
 
     button.addEventListener("touchend", function (event) {
-      if (!["path1", "path2", "path3"].includes(event.target.id)) {
-        websocket.send("stop");
-      }
+      websocket.send("stop");
     });
   });
 }
