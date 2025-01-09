@@ -36,7 +36,7 @@ function initButtons() {
       websocket.send(command);
 
       // Skip adding "stop" logic for path1, path2, and path3
-      if (["path1", "path2", "path3"].includes(command)) return;
+      if (["path1", "path2", "path3", "path4"].includes(command)) return;
 
       // If the stop button is pressed, send the stop command
       if (command === "stop") {
@@ -49,7 +49,7 @@ function initButtons() {
     });
 
     button.addEventListener("mouseup", function (event) {
-      if (!["path1", "path2", "path3"].includes(event.target.id)) {
+      if (!["path1", "path2", "path3", "path4"].includes(event.target.id)) {
         websocket.send("stop");
       }
     });
@@ -59,7 +59,7 @@ function initButtons() {
       websocket.send(command);
 
       // Skip adding "stop" logic for path1, path2, and path3
-      if (["path1", "path2", "path3"].includes(command)) return;
+      if (["path1", "path2", "path3", "path4"].includes(command)) return;
 
       // If the stop button is pressed, send the stop command
       if (command === "stop") {
@@ -72,7 +72,7 @@ function initButtons() {
     });
 
     button.addEventListener("touchend", function (event) {
-      if (!["path1", "path2", "path3"].includes(event.target.id)) {
+      if (!["path1", "path2", "path3", "path4"].includes(event.target.id)) {
         websocket.send("stop");
       }
     });
@@ -136,6 +136,9 @@ var keyActions = {
   3: function () {
     buttonpressed("path3");
   },
+  4: function () {
+    buttonpressed("path4");
+  },
 };
 
 var keys = {};
@@ -144,7 +147,7 @@ document.addEventListener("keydown", function (event) {
   var key = event.key.toLowerCase();
   if (keyActions[key] && !keys[key]) {
     keys[key] = true; // Mark key as pressed
-    if (key === "1" || key === "2" || key === "3") {
+    if (key === "1" || key === "2" || key === "3" || key === "4") {
       keyActions[key](); // Call the function directly for path1, path2, and path3
     } else {
       handleMultipleKeyPress();
@@ -157,7 +160,7 @@ document.addEventListener("keyup", function (event) {
   var key = event.key.toLowerCase();
   if (keys[key]) {
     keys[key] = false; // Mark key as released
-    if (key !== "1" && key !== "2" && key !== "3") {
+    if (key !== "1" && key !== "2" && key !== "3" && key != "4") {
       websocket.send("stop");
     }
   }
@@ -177,7 +180,8 @@ var actionStatus = {
   stop: true,
   path1: false,
   path2: false,
-  path3: false
+  path3: false,
+  path4: false,
 };
 
 function isActionFinished(action) {
@@ -208,7 +212,8 @@ function handleMultipleKeyPress() {
     { keys: ["f"], action: "stop" },
     { keys: ["1"], action: "path1" },
     { keys: ["2"], action: "path2" },
-    { keys: ["3"], action: "path3" }  
+    { keys: ["3"], action: "path3" },
+    { keys: ["4"], action: "path4" },
   ];
 
   for (const { keys: actionKeys, action } of actions) {

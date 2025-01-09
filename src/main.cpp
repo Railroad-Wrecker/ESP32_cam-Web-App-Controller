@@ -24,6 +24,8 @@ bool path2Active = false;
 int currentStep2 = -1; 
 bool path3Active = false;  
 int currentStep3 = -1; 
+bool path4Active = false;  
+int currentStep4 = -1; 
 
 
 void handleForward();
@@ -41,6 +43,7 @@ void diag_back_right ();
 void path1();
 void path2();
 void path3();
+void path4();
 
 void serial_setup() {
   Serial.begin(115200);  // USB Serial for debugging (via FTDI adapter)
@@ -145,6 +148,10 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len)
     if (!strcmp((char *)data, "path3"))
     {
       path3();
+    }
+    if (!strcmp((char *)data, "path4"))
+    {
+      path4();
     }
     else if (String((char *)data).startsWith("setSpeed:"))
     {
@@ -381,36 +388,133 @@ void path3() {
     case 0:
       if (currentTime - lastCommandTime >= 0) {
         //Serial.println("m 162 162 219 219'");
-        Serial.println("m -68.75 -68.75 -122.23 -122.23'");
+        Serial.println("l 70'"); // Forward
         lastCommandTime = currentTime;
         currentStep3 = 1;
       }
       break;
     case 1:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
+        Serial.println("m 70 -70 -70 70'"); // Left
         lastCommandTime = currentTime;
         currentStep3 = 2;
       }
+      else 
       break;
     case 2:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
+        Serial.println("l 70'");// Forward
         lastCommandTime = currentTime;
         currentStep3 = 3;
       }
       break;
     case 3:
+      if(currentTime - lastCommandTime >= 1650){
+        Serial.println("l 0'"); // Stop
+        lastCommandTime = currentTime;
+        currentStep3 = 4;
+      }
+      break;
+    case 4:
+      if (currentTime - lastCommandTime >= 2000) {
+        Serial.println("m -70 70 70 -70'"); // Right
+        lastCommandTime = currentTime;
+        currentStep3 = 5;
+      }
+      break;
+    case 5:
       if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m 70 -70 -70 70'");
+        Serial.println("l 70'"); // Forward
+        lastCommandTime = currentTime;
+        currentStep3 = 6;
+      }
+      break;
+    case 6:
+      if (currentTime - lastCommandTime >= 1650) {
+        Serial.println("m -70 70 70 -70'"); // Right
+        lastCommandTime = currentTime;
+        currentStep3 = 7;
+      }
+      break;
+    case 7:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("l 0'"); // Stop
+        lastCommandTime = currentTime;
+        currentStep3 = 8;
+      }
+      break;
+    case 8:
+      if (currentTime - lastCommandTime >= 2000) {
+        Serial.println("l 70'"); // Forward
+        lastCommandTime = currentTime;
+        currentStep3 = 9;
+      }
+      break;
+    case 9:
+      if (currentTime - lastCommandTime >= 1650) {
+        Serial.println("m 70 -70 -70 70'"); // Left
+        lastCommandTime = currentTime;
+        currentStep3 = 10;
+      }
+      break;
+    case 10:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("l 0'"); // Stop
         currentStep3 = -1;
         path3Active = false;
       }
       break;
     
+    
     default:
       currentStep3 = -1;
       path3Active = false;
+      break;
+  }
+}
+
+void path4() {
+  if (!path4Active) return;
+
+  unsigned long currentTime = millis();
+
+  if (currentStep4 == -1) {
+    currentStep4 = 0;
+    lastCommandTime = currentTime;
+  }
+
+  switch (currentStep4) {
+    case 0:
+      if (currentTime - lastCommandTime >= 0) {
+        Serial.println("m -25.62 95.62 95.62 -25.62'"); // diag_left
+        lastCommandTime = currentTime;
+        currentStep4 = 1;
+      }
+      break;
+    case 1:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m 95.62 -25.62 -25.62 95.62'"); // diag_back_right
+        lastCommandTime = currentTime;
+        currentStep4 = 2;
+      }
+      break;
+    case 2:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("m 70 -70 -70 70'"); // Left
+        lastCommandTime = currentTime;
+        currentStep4 = 3;
+      }
+      break;
+    case 3:
+      if (currentTime - lastCommandTime >= 3300) {
+        Serial.println("l 0'");
+        currentStep4 = -1;
+        path4Active = false;
+      }
+      break;
+    default:
+      currentStep4 = -1;
+      path4Active = false;
       break;
   }
 }
