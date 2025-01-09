@@ -25,7 +25,6 @@ int currentStep2 = -1;
 bool path3Active = false;  
 int currentStep3 = -1; 
 
-bool stopPressed = false;
 
 void handleForward();
 void handleBackward();
@@ -287,18 +286,10 @@ void path1() {
     lastCommandTime = currentTime;
   }
 
-  // Check if the stop button is pressed
-  if (Serial.available() > 0) {
-    char command = Serial.read();
-    if (command == 'f') {
-      stopPressed = true;
-    }
-  }
-
   switch (currentStep1) {
     case 0:
-      if (currentTime - lastCommandTime >= 3300) {
-        Serial.println("m -70 70 70 -70'");
+      if (currentTime - lastCommandTime >= 0) {
+        Serial.println("l 70'");
         lastCommandTime = currentTime;
         currentStep1 = 1;
       }
@@ -327,7 +318,6 @@ void path1() {
         currentStep1 = 4;
       }
       break;
-
     case 4:
       if (currentTime - lastCommandTime >= 4400) {
         Serial.println("l 0'");
@@ -338,13 +328,8 @@ void path1() {
 
     default:
       currentStep1 = -1;
-  }
-
-  // Reset the cycle if stop button is pressed
-  if (stopPressed) {
-    currentStep1 = -1;
-    path1Active = false;
-    stopPressed = false; // Reset the flag
+      path1Active = false;
+      break;
   }
 }
 
