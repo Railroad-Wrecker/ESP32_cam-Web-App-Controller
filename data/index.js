@@ -204,7 +204,17 @@ function handleMultipleKeyPress() {
   for (const { keys: actionKeys, action } of actions) {
     if (actionKeys.every(key => keys[key])) {
       buttonpressed(action, isActionFinished);
+      if (action === "stop") {
+        resetActions(); // Call resetActions when stop is pressed
+      }
       break;
     }
+  }
+}
+
+function resetActions() {
+  // Reset any ongoing actions
+  for (const action in actionStatus) {
+    actionStatus[action] = false;
   }
 }
