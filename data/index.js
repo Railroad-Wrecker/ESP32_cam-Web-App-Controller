@@ -27,14 +27,6 @@ function onMessage(event) {
   console.log(event);
 }
 
-// Function to reset the path state
-function resetPathState() {
-  actionStatus.path1 = false;
-  actionStatus.path2 = false;
-  actionStatus.path3 = false;
-  websocket.send("resetPath");
-}
-
 // Initialize buttons for control
 function initButtons() {
   var buttons = document.querySelectorAll(".button");
@@ -54,7 +46,6 @@ function initButtons() {
     button.addEventListener("mouseup", function (event) {
       if (!["path1", "path2", "path3"].includes(event.target.id)) {
         websocket.send("stop");
-        resetPathState(); // Reset path state when stop is issued
       }
     });
 
@@ -73,7 +64,6 @@ function initButtons() {
     button.addEventListener("touchend", function (event) {
       if (!["path1", "path2", "path3"].includes(event.target.id)) {
         websocket.send("stop");
-        resetPathState(); // Reset path state when stop is issued
       }
     });
   });
@@ -159,7 +149,6 @@ document.addEventListener("keyup", function (event) {
     keys[key] = false; // Mark key as released
     if (key !== "1" && key !== "2" && key !== "3") {
       websocket.send("stop");
-      resetPathState(); // Reset path state when stop is issued
     }
   }
 });
