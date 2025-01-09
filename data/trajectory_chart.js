@@ -1,6 +1,15 @@
 /*
 // D3.js setup
 const width = 800, height = 600;
+const velocityNumbers = [];
+// WebSocket setup
+const ws2 = new WebSocket('ws://192.168.137.77/ws'); // Replace with your ESP32 IP address
+ws2.onmessage = function(event) {
+    console.log("Data received from ESP32:", event.data); // Log received data
+    const velocityNumbers = JSON.parse(event.data);
+}
+
+
 const svg = d3.select("#trajectory_chart").append("svg")
     .attr("width", width)
     .attr("height", height);
@@ -33,9 +42,9 @@ function updatePosition() {
     const deltaTime = 1; // Time step in seconds
 
     // AGV inverse kinematics
-    const v1 = 100, v2 = -50, v3 = 100, v4 = -50;
-    const x_dot = 0.25 * (v1 + v2 + v3 + v4); // x_dot
-    const y_dot = 0.25 * (v2 + v4 - v1 - v3); // y_dot
+    //const v1 = 100, v2 = -50, v3 = 100, v4 = -50;
+    const x_dot = 0.25 * (velocityNumbers[1] + velocityNumbers[2] + velocityNumbers[3] + velocityNumbers[4]); // x_dot
+    const y_dot = 0.25 * (velocityNumbers[2] + velocityNumbers[4] - velocityNumbers[1] - velocityNumbers[3]); // y_dot
 
     x += x_dot * deltaTime;
     y += y_dot * deltaTime;
@@ -150,90 +159,9 @@ function simulateAGV() {
 // Start the simulation
 simulateAGV();
 */
-/*
-// Define square path parameters
-const sideLength = 200; // Length of each side of the square
-const velocities = [];  // Array to store velocity sets
-const speed = 500;      // Speed for linear motion
 
-// Function to generate velocities for each side of the square
-function generateSquarePath() {
-    // Horizontal movement to the right
-    velocities.push({ v1: speed, v2: speed, v3: speed, v4: speed });
 
-    // Vertical movement downward
-    velocities.push({ v1: -speed, v2: speed, v3: -speed, v4: speed });
-
-    // Horizontal movement to the left
-    velocities.push({ v1: -speed, v2: -speed, v3: -speed, v4: -speed });
-
-    // Vertical movement upward
-    velocities.push({ v1: speed, v2: -speed, v3: speed, v4: -speed });
-}
-
-// Call the function to generate the path
-generateSquarePath();
-
-// D3.js setup for visualization
-const width = 800, height = 600;
-const svg = d3.select("#trajectory_chart").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-const trail = svg.append("path")
-    .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 2);
-
-const triangleSize = 20;
-const car = svg.append("polygon")
-    .attr("points", `0,${-triangleSize} ${triangleSize / 2},${triangleSize} ${-triangleSize / 2},${triangleSize}`)
-    .attr("fill", "red")
-    .attr("stroke", "black")
-    .attr("stroke-width", 1);
-
-let data = [];
-let x = 400, y = 300, phi = 0;
-let currentSide = 0, distanceTraveled = 0;
-
-// Function to update position based on the current velocity set
-function updatePosition() {
-    const deltaTime = 0.1; // Time step in seconds
-    const velocity = velocities[currentSide];
-
-    const x_dot = 0.25 * (velocity.v1 + velocity.v2 + velocity.v3 + velocity.v4);
-    const y_dot = 0.25 * (velocity.v2 + velocity.v4 - velocity.v1 - velocity.v3);
-
-    x += x_dot * deltaTime;
-    y += y_dot * deltaTime;
-    distanceTraveled += Math.sqrt(x_dot ** 2 + y_dot ** 2) * deltaTime;
-
-    data.push({ x: x, y: y });
-    if (data.length > 100) data.shift();
-
-    // Check if the car has completed the current side of the square
-    if (distanceTraveled >= sideLength) {
-        currentSide = (currentSide + 1) % velocities.length;
-        distanceTraveled = 0;
-    }
-}
-
-// Function to draw the trail and update car position
-function draw() {
-    trail.attr("d", d3.line().x(d => d.x).y(d => d.y)(data));
-    car.attr("transform", `translate(${x}, ${y}) rotate(${phi})`);
-}
-
-// Function to simulate the square path movement
-function simulateSquarePath() {
-    updatePosition();
-    draw();
-    setTimeout(simulateSquarePath, 100);
-}
-
-// Start simulation
-simulateSquarePath();
-*/
+// Use this code for square
 // D3.js setup for visualization
 const width = 800, height = 600;
 const svg = d3.select("#trajectory_chart").append("svg")
@@ -336,4 +264,3 @@ function simulateSquarePath() {
 
 // Start simulation
 simulateSquarePath();
-

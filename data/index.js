@@ -1,5 +1,5 @@
 window.onload = document.getElementById("streaming").src =
-  "http://192.168.137.23:81/stream";
+  "http://192.168.137.77:81/stream";
 var button = document.querySelector(".button");
 
 var gateway = `ws://${window.location.hostname}/ws`;

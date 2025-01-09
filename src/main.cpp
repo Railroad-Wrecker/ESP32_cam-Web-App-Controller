@@ -8,7 +8,7 @@
 
 HardwareSerial SerialAT(1); // Use UART1
 unsigned long lastMessageTime = 0;
-const unsigned long messageInterval = 1000;  // Send every 1000 ms
+const unsigned long messageInterval = 500;  // Send every 1000 ms
 int values[5];
 
 const char *ssid = "ESP32_CAM";
@@ -241,6 +241,12 @@ void handleRight() {
 
 void handleStop() {
   Serial.println("l 0'");
+  currentStep1 = -1;
+  currentStep2 = -1;
+  currentStep3 = -1;
+  path1Active = false;
+  path2Active = false;
+  path3Active = false;
 }
 
 void rotateLeft() {
@@ -341,14 +347,14 @@ void path2() {
     case 0:
       if (currentTime - lastCommandTime >= 0) {
         //Serial.println("m 162 162 219 219'");
-        Serial.println("m -68.75 -68.75 -122.23 -122.23'");
+        Serial.println("m 68.75 68.75 122.23 122.23'");
         lastCommandTime = currentTime;
         currentStep2 = 1;
       }
       break;
 
     case 1:
-      if (currentTime - lastCommandTime >= 12600) {
+      if (currentTime - lastCommandTime >= 11000) {
         Serial.println("l 0'");
         currentStep2 = -1;
         path2Active = false;
@@ -395,7 +401,7 @@ void path3() {
       }
       break;
     case 3:
-      if (currentTime - lastCommandTime >= 12600) {
+      if (currentTime - lastCommandTime >= 3300) {
         Serial.println("m 70 -70 -70 70'");
         currentStep3 = -1;
         path3Active = false;
