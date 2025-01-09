@@ -161,106 +161,106 @@ simulateAGV();
 */
 
 
-// Use this code for square
-// D3.js setup for visualization
-const width = 800, height = 600;
-const svg = d3.select("#trajectory_chart").append("svg")
-    .attr("width", "100%")
-    .attr("height", "100%")
-    .attr("viewBox", `0 0 ${width} ${height}`)
-    .style("background", "#F2F0EF"); // Dark grey background for road
+// // Use this code for square
+// // D3.js setup for visualization
+// const width = 800, height = 600;
+// const svg = d3.select("#trajectory_chart").append("svg")
+//     .attr("width", "100%")
+//     .attr("height", "100%")
+//     .attr("viewBox", `0 0 ${width} ${height}`)
+//     .style("background", "#F2F0EF"); // Dark grey background for road
 
-// Lane markers
-const laneMarkers = svg.append("g")
-    .attr("stroke", "white")
-    .attr("stroke-width", 2)
-    .attr("stroke-dasharray", "10, 10")
-    .attr("opacity", 0.5);
+// // Lane markers
+// const laneMarkers = svg.append("g")
+//     .attr("stroke", "white")
+//     .attr("stroke-width", 2)
+//     .attr("stroke-dasharray", "10, 10")
+//     .attr("opacity", 0.5);
 
-// Create dashed lines for lanes
-// for (let i = 200; i <= 600; i += 200) {
-//     laneMarkers.append("line")
-//         .attr("x1", 0)
-//         .attr("y1", i)
-//         .attr("x2", width)
-//         .attr("y2", i);
+// // Create dashed lines for lanes
+// // for (let i = 200; i <= 600; i += 200) {
+// //     laneMarkers.append("line")
+// //         .attr("x1", 0)
+// //         .attr("y1", i)
+// //         .attr("x2", width)
+// //         .attr("y2", i);
+// // }
+
+// // Define a group for all visual elements
+// const g = svg.append("g");
+
+// // Trail with fading effect
+// const trail = g.append("path")
+//     .attr("fill", "none")
+//     .attr("stroke", "steelblue")
+//     .attr("stroke-width", 3)
+//     .attr("stroke-linejoin", "round")
+//     .attr("stroke-linecap", "round")
+//     .attr("opacity", 0.7);
+
+// // Car (square with shadow)
+// const carSize = 20;
+// const car = g.append("rect")
+//     .attr("width", carSize)
+//     .attr("height", carSize)
+//     .attr("fill", "#008000")
+//     //.attr("stroke", "#bf360c")
+//     .attr("stroke-width", 2)
+//     .attr("rx", 3) // Rounded corners for aesthetics
+//     .style("filter", "drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4))");
+
+// // Initial position and data
+// let data = [];
+// let x = 400, y = 300, phi = 0;
+// let currentSide = 0, distanceTraveled = 0;
+
+// // Define square path parameters
+// const sideLength = 200; // Length of each side of the square
+// const velocities = [];  // Array to store velocity sets
+// const speed = 100;      // Speed for linear motion
+
+// // Function to generate velocities for square path
+// function generateSquarePath() {
+//     velocities.push({ v1: speed, v2: speed, v3: speed, v4: speed });   // Right
+//     velocities.push({ v1: -speed, v2: speed, v3: -speed, v4: speed }); // Down
+//     velocities.push({ v1: -speed, v2: -speed, v3: -speed, v4: -speed }); // Left
+//     velocities.push({ v1: speed, v2: -speed, v3: speed, v4: -speed });  // Up
+// }
+// generateSquarePath();
+
+// // Function to update position
+// function updatePosition() {
+//     const deltaTime = 0.1; // Time step in seconds
+//     const velocity = velocities[currentSide];
+
+//     const x_dot = 0.25 * (velocity.v1 + velocity.v2 + velocity.v3 + velocity.v4);
+//     const y_dot = 0.25 * (velocity.v2 + velocity.v4 - velocity.v1 - velocity.v3);
+
+//     x += x_dot * deltaTime;
+//     y += y_dot * deltaTime;
+//     distanceTraveled += Math.sqrt(x_dot ** 2 + y_dot ** 2) * deltaTime;
+
+//     data.push({ x: x, y: y });
+//     if (data.length > 100) data.shift();
+
+//     if (distanceTraveled >= sideLength) {
+//         currentSide = (currentSide + 1) % velocities.length;
+//         distanceTraveled = 0;
+//     }
 // }
 
-// Define a group for all visual elements
-const g = svg.append("g");
+// // Function to draw the trail and car
+// function draw() {
+//     trail.attr("d", d3.line().x(d => d.x).y(d => d.y)(data));
+//     car.attr("transform", `translate(${x - carSize / 2}, ${y - carSize / 2}) rotate(${phi}, ${carSize / 2}, ${carSize / 2})`);
+// }
 
-// Trail with fading effect
-const trail = g.append("path")
-    .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 3)
-    .attr("stroke-linejoin", "round")
-    .attr("stroke-linecap", "round")
-    .attr("opacity", 0.7);
+// // Simulate square path
+// function simulateSquarePath() {
+//     updatePosition();
+//     draw();
+//     setTimeout(simulateSquarePath, 100);
+// }
 
-// Car (square with shadow)
-const carSize = 20;
-const car = g.append("rect")
-    .attr("width", carSize)
-    .attr("height", carSize)
-    .attr("fill", "#008000")
-    //.attr("stroke", "#bf360c")
-    .attr("stroke-width", 2)
-    .attr("rx", 3) // Rounded corners for aesthetics
-    .style("filter", "drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4))");
-
-// Initial position and data
-let data = [];
-let x = 400, y = 300, phi = 0;
-let currentSide = 0, distanceTraveled = 0;
-
-// Define square path parameters
-const sideLength = 200; // Length of each side of the square
-const velocities = [];  // Array to store velocity sets
-const speed = 100;      // Speed for linear motion
-
-// Function to generate velocities for square path
-function generateSquarePath() {
-    velocities.push({ v1: speed, v2: speed, v3: speed, v4: speed });   // Right
-    velocities.push({ v1: -speed, v2: speed, v3: -speed, v4: speed }); // Down
-    velocities.push({ v1: -speed, v2: -speed, v3: -speed, v4: -speed }); // Left
-    velocities.push({ v1: speed, v2: -speed, v3: speed, v4: -speed });  // Up
-}
-generateSquarePath();
-
-// Function to update position
-function updatePosition() {
-    const deltaTime = 0.1; // Time step in seconds
-    const velocity = velocities[currentSide];
-
-    const x_dot = 0.25 * (velocity.v1 + velocity.v2 + velocity.v3 + velocity.v4);
-    const y_dot = 0.25 * (velocity.v2 + velocity.v4 - velocity.v1 - velocity.v3);
-
-    x += x_dot * deltaTime;
-    y += y_dot * deltaTime;
-    distanceTraveled += Math.sqrt(x_dot ** 2 + y_dot ** 2) * deltaTime;
-
-    data.push({ x: x, y: y });
-    if (data.length > 100) data.shift();
-
-    if (distanceTraveled >= sideLength) {
-        currentSide = (currentSide + 1) % velocities.length;
-        distanceTraveled = 0;
-    }
-}
-
-// Function to draw the trail and car
-function draw() {
-    trail.attr("d", d3.line().x(d => d.x).y(d => d.y)(data));
-    car.attr("transform", `translate(${x - carSize / 2}, ${y - carSize / 2}) rotate(${phi}, ${carSize / 2}, ${carSize / 2})`);
-}
-
-// Simulate square path
-function simulateSquarePath() {
-    updatePosition();
-    draw();
-    setTimeout(simulateSquarePath, 100);
-}
-
-// Start simulation
-simulateSquarePath();
+// // Start simulation
+// simulateSquarePath();
