@@ -288,7 +288,7 @@ header h1 {
 /* Predefined path button */
 .predefined-path {
   display: grid;
-  grid-template-areas: "path1 path2 path3";
+  grid-template-areas: "path1 path2 path3 path4";
   gap: 15px;
 }
 
@@ -316,6 +316,10 @@ header h1 {
 
 #path3 {
   grid-area: path3;
+}
+
+#path4 {
+  grid-area: path4;
 }
 
 footer {
