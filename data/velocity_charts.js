@@ -44,7 +44,7 @@ function createChart(ctx, label) {
   const chart4 = createChart(document.getElementById('chart4').getContext('2d'), 'Velocity Wheel 4 (Top Right)');
   
   // WebSocket setup
-  const ws = new WebSocket('ws://192.168.137.77/ws'); // Replace with your ESP32 IP address
+  const ws = new WebSocket('ws://192.168.137.79/ws'); // Replace with your ESP32 IP address
   
   ws.onopen = function() {
     console.log("WebSocket connection established");
